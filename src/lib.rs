@@ -11,7 +11,7 @@ use crate::notifier::Notifier;
 use anyhow::{Error, Result};
 use tokio::task::JoinSet;
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct Notification {
     notifiers: Vec<Arc<Box<dyn Notifier>>>,
 }
