@@ -1,14 +1,13 @@
 #[cfg(feature = "email")]
 pub mod email;
+pub mod notifier;
 #[cfg(feature = "telegram")]
 pub mod telegram;
-
-pub mod notifier;
 
 use std::sync::Arc;
 
 use crate::notifier::Notifier;
-use anyhow::{Error, Result};
+use anyhow::Result;
 use tokio::task::JoinSet;
 
 #[derive(Clone, Default)]
@@ -33,21 +32,17 @@ impl Notification {
             let subject = subject.to_string();
             let body = body.to_string();
 
-            set.spawn(async move {
-                if let Err(e) = notifier.send_message(&subject, &body).await {
-                    panic!("{}", e.to_string())
-                }
-            });
+            set.spawn(async move { notifier.send_message(&subject, &body).await });
         }
 
-        let mut results = vec![];
         while let Some(res) = set.join_next().await {
-            results.push(res);
-        }
-
-        for result in results {
-            if let Err(e) = result {
-                return Err(Error::new(e));
+            match res {
+                Ok(a) => {
+                    if let Err(e) = a {
+                        return Err(e);
+                    }
+                }
+                Err(e) => return Err(e.into()),
             }
         }
 
