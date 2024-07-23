@@ -1,6 +1,9 @@
-use crate::notifier::Notifier;
+use std::sync::Arc;
+
 use anyhow::Result;
 use tokio::task::JoinSet;
+
+use crate::notifier::Notifier;
 
 /// `NotifierManager` struct to manage and coordinate multiple notifiers.
 /// This struct holds a list of notifiers and provides methods to add new notifiers and send notifications.
@@ -8,12 +11,12 @@ use tokio::task::JoinSet;
 /// # Fields
 ///
 /// * `notifiers` - A vector of notifiers implementing the `Notifier` trait.
-#[derive(Debug, Clone)]
-pub struct NotifierManager<T: Notifier> {
-    notifiers: Vec<T>,
+#[derive(Clone)]
+pub struct NotifierManager {
+    notifiers: Vec<Arc<Box<dyn Notifier>>>,
 }
 
-impl<T: Notifier + Clone + 'static> NotifierManager<T> {
+impl NotifierManager {
     /// Creates a new `NotifierManager` instance.
     ///
     /// # Returns
@@ -28,8 +31,8 @@ impl<T: Notifier + Clone + 'static> NotifierManager<T> {
     /// # Arguments
     ///
     /// * `notifier` - A notifier implementing the `Notifier` trait to be added.
-    pub fn add_notifier(&mut self, notifier: T) {
-        self.notifiers.push(notifier);
+    pub fn add_notifier(&mut self, notifier: Box<dyn Notifier>) {
+        self.notifiers.push(Arc::new(notifier));
     }
 
     /// Sends a notification using all the notifiers.
