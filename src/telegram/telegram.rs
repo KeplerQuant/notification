@@ -2,7 +2,7 @@ use anyhow::Result;
 use async_trait::async_trait;
 use teloxide::{prelude::*, types::Recipient};
 
-use crate::Notifier;
+use crate::notifier::Notifier;
 
 #[derive(Debug, Clone)]
 pub struct Telegram {
