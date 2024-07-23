@@ -2,3 +2,5 @@
 /// It defines an `Email` struct which can be used to configure SMTP settings,
 /// add recipients, and send email messages.
 pub mod email;
+
+pub use email::Email;
