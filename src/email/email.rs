@@ -8,6 +8,7 @@ use lettre::{
 
 use crate::notifier::Notifier;
 
+#[derive(Debug, Clone)]
 pub struct Email {
     from: Mailbox,
     mailer: SmtpTransport,

@@ -4,6 +4,7 @@ use teloxide::{prelude::*, types::Recipient};
 
 use crate::Notifier;
 
+#[derive(Debug, Clone)]
 pub struct Telegram {
     bot: Bot,
     recipients: Vec<Recipient>,

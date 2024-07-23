@@ -8,11 +8,12 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.82"
 async-trait = "0.1.80"
-lettre = "0.11.0"
+lettre = {version="0.11.0", optional = true }
 teloxide = { version = "0.12.2", optional = true }
 tokio = { version = "1.37.0", features = ["full"] }
 
 [features]
 telegram = ["teloxide"]
-email = []
+email = ["lettre"]
+
 default = ["telegram"]

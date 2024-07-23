@@ -4,24 +4,22 @@ pub mod notifier;
 #[cfg(feature = "telegram")]
 pub mod telegram;
 
-use std::sync::Arc;
-
 use crate::notifier::Notifier;
 use anyhow::Result;
 use tokio::task::JoinSet;
 
-#[derive(Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct Notification<T: Notifier> {
-    notifiers: Vec<Arc<T>>,
+    notifiers: Vec<T>,
 }
 
-impl<T: Notifier + 'static> Notification<T> {
+impl<T: Notifier + Clone + 'static> Notification<T> {
     pub fn new() -> Self {
         Self { notifiers: vec![] }
     }
 
     pub fn add_notifier(&mut self, notifier: T) {
-        self.notifiers.push(Arc::new(notifier));
+        self.notifiers.push(notifier);
     }
 
     pub async fn notify(&self, subject: &str, body: &str) -> Result<()> {
