@@ -11,16 +11,16 @@ use anyhow::Result;
 use tokio::task::JoinSet;
 
 #[derive(Clone, Default)]
-pub struct Notification {
-    notifiers: Vec<Arc<Box<dyn Notifier>>>,
+pub struct Notification<T: Notifier> {
+    notifiers: Vec<Arc<T>>,
 }
 
-impl Notification {
+impl<T: Notifier + 'static> Notification<T> {
     pub fn new() -> Self {
         Self { notifiers: vec![] }
     }
 
-    pub fn add_notifier(&mut self, notifier: Box<dyn Notifier>) {
+    pub fn add_notifier(&mut self, notifier: T) {
         self.notifiers.push(Arc::new(notifier));
     }
 

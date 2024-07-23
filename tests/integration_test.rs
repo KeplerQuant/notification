@@ -6,7 +6,7 @@ async fn test_send_message() {
     tg.add_recipient(5902201639);
 
     let mut notification = Notification::new();
-    notification.add_notifier(Box::new(tg));
+    notification.add_notifier(tg);
 
     let res = notification.notify("subject", "body").await;
     assert!(res.is_ok())
