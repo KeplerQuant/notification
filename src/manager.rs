@@ -2,20 +2,46 @@ use crate::notifier::Notifier;
 use anyhow::Result;
 use tokio::task::JoinSet;
 
+/// `NotifierManager` struct to manage and coordinate multiple notifiers.
+/// This struct holds a list of notifiers and provides methods to add new notifiers and send notifications.
+///
+/// # Fields
+///
+/// * `notifiers` - A vector of notifiers implementing the `Notifier` trait.
 #[derive(Debug, Clone)]
 pub struct NotifierManager<T: Notifier> {
     notifiers: Vec<T>,
 }
 
 impl<T: Notifier + Clone + 'static> NotifierManager<T> {
+    /// Creates a new `NotifierManager` instance.
+    ///
+    /// # Returns
+    ///
+    /// * A new instance of `NotifierManager`.
     pub fn new() -> Self {
         Self { notifiers: vec![] }
     }
 
+    /// Adds a notifier to the manager's list of notifiers.
+    ///
+    /// # Arguments
+    ///
+    /// * `notifier` - A notifier implementing the `Notifier` trait to be added.
     pub fn add_notifier(&mut self, notifier: T) {
         self.notifiers.push(notifier);
     }
 
+    /// Sends a notification using all the notifiers.
+    ///
+    /// # Arguments
+    ///
+    /// * `subject` - The subject of the notification.
+    /// * `body` - The body of the notification.
+    ///
+    /// # Returns
+    ///
+    /// * `Result<()>` - Returns `Ok(())` if all notifications are sent successfully, otherwise returns an error.
     pub async fn notify(&self, subject: &str, body: &str) -> Result<()> {
         let mut set = JoinSet::new();
 
