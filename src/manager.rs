@@ -27,10 +27,10 @@ impl<T: Notifier + Clone + 'static> NotifierManager<T> {
             set.spawn(async move { notifier.send_message(&subject, &body).await });
         }
 
-        while let Some(res) = set.join_next().await {
-            match res {
-                Ok(a) => {
-                    if let Err(e) = a {
+        while let Some(result) = set.join_next().await {
+            match result {
+                Ok(result) => {
+                    if let Err(e) = result {
                         return Err(e);
                     }
                 }
